@@ -217,9 +217,9 @@ export const useDepositStore = create<DepositState>((set, get) => ({
       const mappedDeposits: FixedDeposit[] = rawData.map((d: any) => ({
         id: d.id,
         fdNumber: d.fdNumber || d.account_number,
-        bankName: d.bankName || d.institution_name,
-        bankShortName: (d.bankName || d.institution_name || "").split(" ")[0],
-        bankLogoInitials: (d.bankName || d.institution_name || "B").substring(0, 1),
+        bankName: d.bank_name || d.institution_name,
+        bankShortName: (d.bank_name || d.institution_name || "").split(" ")[0],
+        bankLogoInitials: (d.bank_name || d.institution_name || "B").substring(0, 1),
         bankLogoColor: "bg-blue-600",
         category: d.tenure_months >= 60 ? "tax_saver" : "bank",
         type: d.interest_type === "non_cumulative" ? "non_cumulative" : "cumulative",

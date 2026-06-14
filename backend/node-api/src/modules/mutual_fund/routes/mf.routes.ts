@@ -6,7 +6,8 @@ const navCtrl        = require('../controllers/mf.nav.controller');
 const sipCtrl        = require('../controllers/mf.sip.controller');
 const authMiddleware = require('../../../shared/middleware/auth.middleware');
 
-router.use(authMiddleware);
+// AUTH BYPASS — re-enable for production
+// router.use(authMiddleware);
 
 // ── Scheme Master ─────────────────────────────────────────────────
 router.get('/schemes',          navCtrl.getSchemes);

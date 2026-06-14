@@ -10,6 +10,8 @@ import {
 
 const router = Router();
 
+// AUTH BYPASS — re-enable for production
+// router.get('/holdings', getDeposits);
 router.get('/holdings', getDeposits);
 router.post('/holdings', createDeposit);
 router.put('/holdings/:id', updateDeposit);

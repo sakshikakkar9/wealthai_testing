@@ -5,12 +5,17 @@ exports.getHoldings = async (user_id) => {
   const { rows } = await db.query(
     `SELECT
        h.id, h.quantity, h.avg_buy_price, h.current_price,
-       h.unrealised_pnl, h.last_updated,
-       i.symbol, i.name AS company_name, i.exchange, i.isin,
+       h.unrealised_pnl AS pnl, h.last_updated,
+       i.symbol AS ticker_symbol, i.name AS stock_name, i.exchange, i.isin,
        ub.nickname  AS broker_nickname,
        ub.broker_name,
        (h.quantity * h.avg_buy_price)  AS invested_amount,
-       (h.quantity * h.current_price)  AS current_value
+       (h.quantity * h.current_price)  AS current_value,
+       CASE
+         WHEN (h.quantity * h.avg_buy_price) > 0 THEN
+           (h.unrealised_pnl / (h.quantity * h.avg_buy_price)) * 100
+         ELSE 0
+       END AS pnl_percent
      FROM india_market.equity_holdings h
      JOIN india_market.instruments i ON i.id = h.instrument_id
      JOIN auth.user_brokers ub        ON ub.id = h.broker_account_id

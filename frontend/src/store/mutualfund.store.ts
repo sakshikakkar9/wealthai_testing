@@ -266,7 +266,7 @@ export const useMFStore = create<MFState>((set, get) => ({
               totalCurrentValue: parseFloat((summaryRes as any).total_current_value || "0"),
               totalGainLoss: parseFloat((summaryRes as any).total_gain_loss || "0"),
               totalGainPct: parseFloat((summaryRes as any).total_gain_pct || "0"),
-              xirr: (summaryRes as any).xirr || 0, // TODO: wire to backend xirr calculation
+              xirr: (summaryRes as any).xirr || 0, // AUTH BYPASS — re-enable for production
               monthlySIPAmount: parseFloat((summaryRes as any).monthly_sip_amount || "0"),
               nextSIPDate: (summaryRes as any).next_sip_date || null,
               nextSIPAmount: parseFloat((summaryRes as any).next_sip_amount || "0"),

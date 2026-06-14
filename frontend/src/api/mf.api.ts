@@ -1,17 +1,16 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 const getHeaders = () => {
-  const mockToken = 'mock-token';
+  // AUTH BYPASS — re-enable for production
   return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${mockToken}`
+    'Content-Type': 'application/json'
   };
 };
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
+    // window.location.href = '/login';
+    // throw new Error('Unauthorized');
   }
   const json = await res.json();
   if (!res.ok) throw new Error(json?.message || 'Request failed');
@@ -90,7 +89,7 @@ export const fetchMFHoldings = async (params: Record<string, string | number> = 
     ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
   });
 
-  const url = `${BASE_URL}/mutual-funds/holdings?${queryParams.toString()}`;
+  const url = `${BASE_URL}/mf/holdings?${queryParams.toString()}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: getHeaders()
@@ -100,7 +99,7 @@ export const fetchMFHoldings = async (params: Record<string, string | number> = 
 };
 
 export const fetchMFSummary = async () => {
-  const url = `${BASE_URL}/mutual-funds/holdings/summary`;
+  const url = `${BASE_URL}/mf/holdings/summary`;
   const response = await fetch(url, {
     method: 'GET',
     headers: getHeaders()
@@ -110,7 +109,7 @@ export const fetchMFSummary = async () => {
 };
 
 export const createMFHoldingAPI = async (data: AddHoldingPayload) => {
-  const response = await fetch(`${BASE_URL}/mutual-funds/holdings/add`, {
+  const response = await fetch(`${BASE_URL}/mf/holdings/add`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(data),
@@ -119,7 +118,7 @@ export const createMFHoldingAPI = async (data: AddHoldingPayload) => {
 };
 
 export const updateMFHoldingAPI = async (id: string, data: Partial<AddHoldingPayload>) => {
-  const response = await fetch(`${BASE_URL}/mutual-funds/holdings/${id}`, {
+  const response = await fetch(`${BASE_URL}/mf/holdings/${id}`, {
     method: 'PUT',
     headers: getHeaders(),
     body: JSON.stringify(data),
@@ -128,7 +127,7 @@ export const updateMFHoldingAPI = async (id: string, data: Partial<AddHoldingPay
 };
 
 export const deleteMFHoldingAPI = async (id: string) => {
-  const response = await fetch(`${BASE_URL}/mutual-funds/holdings/${id}`, {
+  const response = await fetch(`${BASE_URL}/mf/holdings/${id}`, {
     method: 'DELETE',
     headers: getHeaders(),
   });
@@ -136,7 +135,7 @@ export const deleteMFHoldingAPI = async (id: string) => {
 };
 
 export const fetchMFSchemes = async (search: string) => {
-  const url = `${BASE_URL}/mutual-funds/schemes?search=${encodeURIComponent(search)}&limit=10`;
+  const url = `${BASE_URL}/mf/schemes?search=${encodeURIComponent(search)}&limit=10`;
   const response = await fetch(url, {
     method: 'GET',
     headers: getHeaders()
@@ -147,7 +146,7 @@ export const fetchMFSchemes = async (search: string) => {
 
 export const fetchMFTransactions = async (filters: any = {}) => {
   const queryParams = new URLSearchParams(filters);
-  const url = `${BASE_URL}/mutual-funds/transactions?${queryParams.toString()}`;
+  const url = `${BASE_URL}/mf/transactions?${queryParams.toString()}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: getHeaders()

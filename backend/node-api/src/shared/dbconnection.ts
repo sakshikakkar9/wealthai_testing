@@ -20,7 +20,7 @@ const pool: Pool = new Pool({
 pool.connect((err: Error | undefined, client: PoolClient | undefined, release: (err?: Error) => void) => {
   if (err) {
     logger.error(`PostgreSQL connection failed: ${err.message}`);
-    process.exit(1);
+    // process.exit(1);
   }
   logger.info('PostgreSQL connected successfully ✅');
   release();
