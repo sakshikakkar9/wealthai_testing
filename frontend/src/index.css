@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --color-page-bg: #f2f0ef;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: var(--color-page-bg);
+  color: #111827;
+}
+
+body {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
