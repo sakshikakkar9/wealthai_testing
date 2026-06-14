@@ -172,3 +172,28 @@ exports.getPnl = async (user_id) => {
     overall_pnl:          eR + fR + aP + eU,
   };
 };
+
+exports.getAllTransactions = async (user_id) => {
+  const { rows } = await db.query(
+    `SELECT id, 'Bond' AS module, txn_type AS type, total_amount AS amount, txn_date AS date, 'confirmed' AS status
+     FROM bond.bond_transactions bt
+     JOIN bond.bond_holdings bh ON bh.id = bt.holding_id
+     WHERE bh.user_id = $1
+     UNION ALL
+     SELECT id, 'Deposits' AS module, transaction_type AS type, amount, transaction_date AS date, 'confirmed' AS status
+     FROM deposits.account_transactions
+     WHERE user_id = $1
+     UNION ALL
+     SELECT id, 'Mutual Fund' AS module, txn_type AS type, amount, transaction_date AS date, 'confirmed' AS status
+     FROM mutual_fund.mf_transactions mt
+     JOIN mutual_fund.mf_holdings mh ON mh.id = mt.holding_id
+     WHERE mh.user_id = $1
+     UNION ALL
+     SELECT id, 'Equity' AS module, transaction_type AS type, (quantity * price) AS amount, traded_at AS date, 'confirmed' AS status
+     FROM india_market.equity_transactions
+     WHERE user_id = $1
+     ORDER BY date DESC`,
+    [user_id]
+  );
+  return rows;
+};
