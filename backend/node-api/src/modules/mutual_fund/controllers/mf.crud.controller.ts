@@ -5,9 +5,17 @@ const { sendSuccess, sendError } = require('../../../shared/response');
 exports.getHoldings = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     // AUTH BYPASS — re-enable for production
-    const userId = req.user?.user_id || '1';
+    const userId = req.user?.user_id || '00000000-0000-0000-0000-000000000000';
     const holdings = await services.getHoldings(userId);
     return sendSuccess(res, holdings);
+  } catch (err) { next(err); }
+};
+
+exports.getHoldingsSummary = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user?.user_id || '00000000-0000-0000-0000-000000000000';
+    const summary = await services.getHoldingsSummary(userId);
+    return sendSuccess(res, summary);
   } catch (err) { next(err); }
 };
 

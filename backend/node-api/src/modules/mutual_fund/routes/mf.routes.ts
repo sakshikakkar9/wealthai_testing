@@ -20,6 +20,7 @@ router.post('/parse-nav',       navCtrl.parseNav);
 
 // ── Holdings & Transactions ───────────────────────────────────────
 router.get('/holdings',         crudCtrl.getHoldings);
+router.get('/holdings/summary', crudCtrl.getHoldingsSummary);
 router.post('/holdings/add',    crudCtrl.addHolding);
 router.post('/transaction',     crudCtrl.addTransaction);
 router.get('/transactions',     crudCtrl.getTransactions);

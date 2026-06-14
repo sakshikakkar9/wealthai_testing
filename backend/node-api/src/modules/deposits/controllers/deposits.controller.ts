@@ -9,7 +9,7 @@ interface AuthRequest extends Request {
 export const getDeposits = async (req: AuthRequest, res: Response) => {
   try {
     // AUTH BYPASS — re-enable for production
-    const userId = req.user?.user_id || '1';
+    const userId = req.user?.user_id || '00000000-0000-0000-0000-000000000000';
     const holdings = await services.getAllHoldings(userId, req.query.account_type);
     res.json({ success: true, data: holdings });
   } catch (err: any) {
