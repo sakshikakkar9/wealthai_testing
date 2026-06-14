@@ -79,7 +79,7 @@ app.get('/db-test', async (req: any, res: any) => {
 app.use('/api/v1/auth',       authRoutes);
 app.use('/api/v1/bond',       bondRoutes);
 app.use('/api/v1/deposits',   depositsRoutes);
-// app.use('/api/v1/mf',         mfRoutes);
+app.use('/api/v1/mf',         mfRoutes);
 app.use('/api/v1/mutual-funds', mfRoutes);
 app.use('/api/v1/algo',       algoRoutes);
 app.use('/api/v1/market',     marketRoutes);

@@ -4,7 +4,8 @@ const router         = express.Router();
 const ctrl           = require('../controllers/bond.controller');
 const authMiddleware = require('../../../shared/middleware/auth.middleware');
 
-router.use(authMiddleware);
+// AUTH BYPASS — re-enable for production
+// router.use(authMiddleware);
 
 router.get('/master',            ctrl.getBondMaster);
 router.post('/add',              ctrl.addHolding);

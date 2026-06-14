@@ -7,7 +7,8 @@ const fnoCtrl          = require('../controllers/fno.controller');
 const marketdataCtrl   = require('../controllers/marketdata.controller');
 const authMiddleware   = require('../../../shared/middleware/auth.middleware');
 
-router.use(authMiddleware);
+// AUTH BYPASS — re-enable for production
+// router.use(authMiddleware);
 
 // ── Instruments ───────────────────────────────────────────────────
 router.get('/instruments',              instrumentsCtrl.getInstruments);

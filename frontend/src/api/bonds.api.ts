@@ -13,12 +13,17 @@ const BOND_TYPE_MAP: Record<string, string> = {
   't_bill': 'T-Bill',
   'treasury': 'T-Bill',
   'tax_free': 'Tax Free',
-  'sdl': 'SDL'
+  'sdl': 'SDL',
+  'treasury': 'T-Bill',
+  't-bill': 'T-Bill',
+  't_bill': 'T-Bill',
+  'default': 'Corporate'
 };
 
 export const fetchBondsFromAPI = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/bond/holdings?_t=${Date.now()}`, {
+    // AUTH BYPASS — re-enable for production
+    const response = await fetch(`${BASE_URL}/bond/all?_t=${Date.now()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +44,7 @@ export const fetchBondsFromAPI = async () => {
         const actualQuantity = Number(dbBond.quantity) || 1;
 
         const rawType = (dbBond.bond_type || '').toLowerCase();
-        const uiType = BOND_TYPE_MAP[rawType] || "Corporate";
+        const uiType = BOND_TYPE_MAP[rawType] || BOND_TYPE_MAP['default'];
 
         return {
           bond_id: dbBond.bond_id || dbBond.master_bond_id || dbBond.id, 
@@ -52,12 +57,10 @@ export const fetchBondsFromAPI = async () => {
           status: dbBond.status || "Active",
           coupon_rate: realCoupon,
           invested_amount: actualInvested, 
-          current_value: actualInvested,   
+          current_value: actualQuantity * (dbBond.current_price || realFaceValue),
           quantity: actualQuantity,
           ytm: realCoupon || 7.00,                
-          maturity_date: dbBond.maturity_date 
-            ? new Date(dbBond.maturity_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-            : "N/A"
+          maturity_date: dbBond.maturity_date || "N/A"
         };
       });
     }

@@ -24,15 +24,7 @@ import { useDashboardStore } from "../../store/dashboard.store";
 
 const MARKET_RATES: any[] = [];
 
-const INCOME_PROJECTION = [
-  {
-    month: "Jun 26",
-    principal_maturity: 0,
-    interest_payout: 0,
-    fd_ids: [],
-    event: "maturity" as const,
-  },
-];
+const INCOME_PROJECTION: any[] = [];
 
 const DepositsPage: React.FC = () => {
   const { setActiveNav } = useDashboardStore();

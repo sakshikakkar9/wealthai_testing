@@ -4,11 +4,19 @@ import db from '../../../shared/dbconnection';
 exports.getHoldings = async (user_id) => {
   const { rows } = await db.query(
     `SELECT h.id, h.folio_number, h.units, h.avg_nav, h.invested_amount, h.is_active,
-            s.scheme_name, s.fund_house, s.category, s.sub_category, s.plan_type,
+            s.scheme_name, s.fund_house, s.category AS fund_type, s.sub_category, s.plan_type,
             (SELECT nav_value FROM mutual_fund.mf_nav_history
-             WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) AS current_nav,
+             WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) AS nav,
             (SELECT day_change_percent FROM mutual_fund.mf_nav_history
-             WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) AS day_change_percent
+             WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) AS day_change_percent,
+            ((SELECT nav_value FROM mutual_fund.mf_nav_history
+              WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) * h.units) AS current_value,
+            CASE
+              WHEN h.invested_amount > 0 THEN
+                ((((SELECT nav_value FROM mutual_fund.mf_nav_history
+                    WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1) * h.units) - h.invested_amount) / h.invested_amount) * 100
+              ELSE 0
+            END AS returns_percent
      FROM mutual_fund.mf_holdings h
      JOIN mutual_fund.mf_schemes s ON s.scheme_id = h.scheme_id
      WHERE h.user_id = $1 AND h.is_active = true

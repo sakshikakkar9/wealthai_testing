@@ -156,8 +156,8 @@ const EquityPage = () => {
         if (res?.success && Array.isArray(res.data)) {
           const mapped: EquityHolding[] = res.data.map((h: any) => ({
             id: h.id,
-            name: h.company_name || h.symbol,
-            ticker: h.symbol,
+            name: h.stock_name || h.ticker_symbol,
+            ticker: h.ticker_symbol,
             assetClass: "equity",
             account: h.broker_nickname || "default",
             tags: [],
@@ -166,9 +166,9 @@ const EquityPage = () => {
             currentPrice: Number(h.current_price),
             currentValue: Number(h.current_value),
             invested: Number(h.invested_amount),
-            gainLoss: Number(h.unrealised_pnl),
-            gainPct: Number(h.invested_amount) > 0 ? (Number(h.unrealised_pnl) / Number(h.invested_amount)) * 100 : 0,
-            xirr: 0, // Mock
+            gainLoss: Number(h.pnl),
+            gainPct: Number(h.pnl_percent),
+            xirr: 0, // AUTH BYPASS — re-enable for production
             dayChange: 0, // Mock
             dayChangePct: 0, // Mock
             weight: 0, // Will be computed
@@ -488,7 +488,7 @@ const EquityPage = () => {
 
           {/* PERFORMANCE ROW */}
           <div className="px-6 py-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <PnLSplitChart data={MOCK_PORTFOLIO_HISTORY} />
+            <PnLSplitChart data={[]} />
             <RiskMetricsPanel metrics={riskMetrics} />
           </div>
 
@@ -555,7 +555,7 @@ const EquityPage = () => {
 
           {/* NEW: Corporate Actions Feed */}
           <div className="px-6 pb-4">
-            <CorporateActionsFeed actions={MOCK_CORPORATE_ACTIONS as any} />
+            <CorporateActionsFeed actions={[]} />
           </div>
 
           {/* SECTION 5 — Movers + alerts */}
@@ -563,14 +563,7 @@ const EquityPage = () => {
             <DailyMoversPanel variant="gainers" holdings={equityHoldings} />
             <DailyMoversPanel variant="losers" holdings={equityHoldings} />
             <CorporateActionsPanel
-              actions={MOCK_CORPORATE_ACTIONS.map((a) => ({
-                ticker: a.symbol,
-                name: a.symbol,
-                type: a.action.toLowerCase() as any,
-                date: a.date,
-                detail: a.detail,
-                impact: "",
-              }))}
+              actions={[]}
             />
           </div>
 

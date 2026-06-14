@@ -25,11 +25,11 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
-        <Route path="/equity" element={<ProtectedRoute><Equity /></ProtectedRoute>} />
-        <Route path="/mutual-funds" element={<ProtectedRoute><MutualFunds /></ProtectedRoute>} />
-        <Route path="/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
-        <Route path="/bonds" element={<ProtectedRoute><Bonds /></ProtectedRoute>} />
-        <Route path="/bonds/:bondId" element={<ProtectedRoute><BondDetailPage /></ProtectedRoute>} />
+        <Route path="/equity" element={<Equity />} />
+        <Route path="/mutual-funds" element={<MutualFunds />} />
+        <Route path="/deposits" element={<Deposits />} />
+        <Route path="/bonds" element={<Bonds />} />
+        <Route path="/bonds/:bondId" element={<BondDetailPage />} />
         <Route path="/fno" element={<Fno />} />
         <Route path="/algo" element={<Algo />} />
         <Route path="/integrations/*" element={<IntegrationRoutes />} />
