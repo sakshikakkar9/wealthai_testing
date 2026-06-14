@@ -28,7 +28,7 @@ export const computeSIPXIRR = (
   if (totalInvested === 0) return 0;
   const avgHoldingYears =
     investments.reduce((s, i) => {
-      const daysDiff = (Date.now() - i.date.getTime()) / (1000 * 60 * 60 * 24 * 365);
+      const daysDiff = (new Date().getTime() - i.date.getTime()) / (1000 * 60 * 60 * 24 * 365);
       return s + daysDiff;
     }, 0) / investments.length;
 

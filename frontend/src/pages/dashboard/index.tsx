@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { TrendingUp, Activity, ArrowUpRight, Coins } from "lucide-react";
 import Sidebar from "./_components/Sidebar";
 import TopHeader from "./_components/TopHeader";
@@ -16,8 +16,40 @@ import MaturitiesTable from "./_components/MaturitiesTable";
 import IncomeList from "./_components/IncomeList";
 import SparklineChart from "../../components/charts/SparklineChart";
 import { formatINR, formatShortINR } from "../../utils/formatters";
+import { getPortfolioSummary, getPortfolioAllocation } from "../../api/portfolio.api";
 
 const Dashboard: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [summaryData, setSummaryData] = useState<any>(null);
+  const [allocationData, setAllocationData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [summaryRes, allocationRes] = await Promise.all([
+          getPortfolioSummary(),
+          getPortfolioAllocation()
+        ]);
+        if (summaryRes.success) setSummaryData(summaryRes.data);
+        if (allocationRes.success) {
+          const colors = ["#6366F1", "#10B981", "#F59E0B", "#3B82F6", "#EAB308", "#8B5CF6", "#94A3B8"];
+          setAllocationData(allocationRes.data.map((item: any, index: number) => ({
+            name: item.asset_class,
+            value: parseFloat(item.allocation_pct),
+            color: colors[index % colors.length]
+          })));
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const SPARKLINES = useMemo(
     () => ({
       netWorth: [100, 104, 102, 108, 112, 110, 118],
@@ -42,19 +74,6 @@ const Dashboard: React.FC = () => {
       { date: "Mar 26", value: 12150000 },
       { date: "Apr 26", value: 12620000 },
       { date: "May 26", value: 12482450 },
-    ],
-    [],
-  );
-
-  const ALLOCATION = useMemo(
-    () => [
-      { name: "Equity", value: 32, color: "#6366F1" },
-      { name: "Mutual Funds", value: 24, color: "#10B981" },
-      { name: "FD/Deposits", value: 15, color: "#F59E0B" },
-      { name: "Bonds", value: 8, color: "#3B82F6" },
-      { name: "Gold/SGB", value: 6, color: "#EAB308" },
-      { name: "Real Estate", value: 10, color: "#8B5CF6" },
-      { name: "Cash", value: 5, color: "#94A3B8" },
     ],
     [],
   );
@@ -206,6 +225,22 @@ const Dashboard: React.FC = () => {
     [],
   );
 
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-slate-50 items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen bg-slate-50 items-center justify-center">
+        <div className="text-red-500 font-bold">Error: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans antialiased">
       <Sidebar />
@@ -220,15 +255,22 @@ const Dashboard: React.FC = () => {
                   Total Net Worth
                 </p>
                 <div className="flex flex-wrap items-baseline gap-3">
-                  <h2 className="text-3xl md:text-4xl font-bold tabular-nums">₹1,24,82,450</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold tabular-nums">
+                    {formatINR(summaryData?.grand_total_current_value || 0)}
+                  </h2>
                   <div className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-lg flex items-center gap-1">
                     <TrendingUp size={14} className="text-emerald-300" />
-                    <span className="text-sm font-bold text-emerald-300">+2.67%</span>
+                    <span className="text-sm font-bold text-emerald-300">
+                      {summaryData?.grand_gain_pct || "0.00"}%
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mt-2">
-                  <p className="text-indigo-100/80 text-xs font-medium">As of 29 May 2026</p>
-                  <p className="text-indigo-50 text-xs font-bold">+₹3,24,000 this month</p>
+                  <p className="text-indigo-100/80 text-xs font-medium">As of {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  <p className="text-indigo-50 text-xs font-bold">
+                    {summaryData?.grand_total_gain >= 0 ? "+" : ""}
+                    {formatINR(summaryData?.grand_total_gain || 0)} total gain
+                  </p>
                 </div>
               </div>
               <div className="w-full md:w-64 h-20 bg-white/5 rounded-xl p-2 backdrop-blur-sm border border-white/10">
@@ -244,10 +286,10 @@ const Dashboard: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               title="Net Worth"
-              value="₹1,24,82,450"
-              change="+₹3,24,000 (+2.67%)"
-              changeType="positive"
-              changeLabel="vs last month"
+              value={formatINR(summaryData?.grand_total_current_value || 0)}
+              change={`${summaryData?.grand_total_gain >= 0 ? "+" : ""}${formatINR(summaryData?.grand_total_gain || 0)} (${summaryData?.grand_gain_pct || "0.00"}%)`}
+              changeType={summaryData?.grand_total_gain >= 0 ? "positive" : "negative"}
+              changeLabel="total gain"
               icon={TrendingUp}
               accentColor="indigo"
               sparklineData={SPARKLINES.netWorth}
@@ -300,10 +342,10 @@ const Dashboard: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-6">
                   <div>
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                      Peak Value
+                      Current Value
                     </p>
                     <p className="text-base md:text-lg font-bold text-slate-900 tabular-nums">
-                      ₹1.28 Cr
+                      {formatShortINR(summaryData?.grand_total_current_value || 0)}
                     </p>
                   </div>
                   <div className="hidden sm:block w-px h-8 bg-slate-100" />
@@ -312,7 +354,7 @@ const Dashboard: React.FC = () => {
                       Invested
                     </p>
                     <p className="text-base md:text-lg font-bold text-slate-900 tabular-nums">
-                      ₹94.2 L
+                      {formatShortINR(summaryData?.grand_total_invested || 0)}
                     </p>
                   </div>
                   <div className="hidden sm:block w-px h-8 bg-slate-100" />
@@ -321,11 +363,11 @@ const Dashboard: React.FC = () => {
                       Total Gain
                     </p>
                     <div className="flex items-center gap-1">
-                      <p className="text-base md:text-lg font-bold text-emerald-600 tabular-nums">
-                        ₹30.6 L
+                      <p className={`text-base md:text-lg font-bold tabular-nums ${summaryData?.grand_total_gain >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                        {formatShortINR(summaryData?.grand_total_gain || 0)}
                       </p>
-                      <span className="text-[10px] md:text-xs font-bold text-emerald-500 bg-emerald-50 px-1 rounded">
-                        (+32.5%)
+                      <span className={`text-[10px] md:text-xs font-bold px-1 rounded ${summaryData?.grand_total_gain >= 0 ? "text-emerald-500 bg-emerald-50" : "text-red-500 bg-red-50"}`}>
+                        ({summaryData?.grand_total_gain >= 0 ? "+" : ""}{summaryData?.grand_gain_pct || "0.00"}%)
                       </span>
                     </div>
                   </div>
@@ -341,11 +383,10 @@ const Dashboard: React.FC = () => {
                 </button>
               }
             >
-              <DonutAllocationChart data={ALLOCATION} />
+              <DonutAllocationChart data={allocationData.length > 0 ? allocationData : []} />
               <div className="mt-4 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
                 <p className="text-[11px] text-indigo-700 font-medium">
-                  💡 <span className="font-bold">Equity over target by 7%</span>. Consider
-                  rebalancing some profits into Bonds.
+                  💡 <span className="font-bold">Allocation overview</span> based on your current holdings across all modules.
                 </p>
               </div>
             </WidgetCard>

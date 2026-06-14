@@ -172,3 +172,63 @@ exports.getPnl = async (user_id) => {
     overall_pnl:          eR + fR + aP + eU,
   };
 };
+
+exports.getAllTransactions = async (user_id) => {
+  const sql = `
+    SELECT id, 'Bond' as module, txn_type as type, total_amount as amount, txn_date as date, 'confirmed' as status
+    FROM bond.bond_transactions
+    WHERE holding_id IN (SELECT id FROM bond.bond_holdings WHERE user_id = $1)
+
+    UNION ALL
+
+    SELECT id, 'Deposits' as module, transaction_type as type, amount, transaction_date as date, 'confirmed' as status
+    FROM deposits.account_transactions
+    WHERE user_id = $1
+
+    UNION ALL
+
+    SELECT id, 'Mutual Fund' as module, txn_type as type, amount, transaction_date as date, 'confirmed' as status
+    FROM mutual_fund.mf_transactions
+    WHERE holding_id IN (SELECT id FROM mutual_fund.mf_holdings WHERE user_id = $1)
+
+    UNION ALL
+
+    SELECT id, 'Equity' as module, transaction_type as type, (quantity * price) as amount, traded_at as date, 'confirmed' as status
+    FROM india_market.equity_transactions
+    WHERE user_id = $1
+
+    ORDER BY date DESC
+  `;
+  const { rows } = await db.query(sql, [user_id]);
+  return rows;
+};
+
+exports.getHoldings = async (user_id) => {
+  const [bonds, deposits, mf, equity] = await Promise.all([
+    db.query(`SELECT h.id, b.bond_name as name, b.isin as ticker, 'bond' as asset_class, h.invested_amount, h.maturity_amount as current_value, h.status FROM bond.bond_holdings h JOIN bond.bond_master b ON b.id = h.bond_id WHERE h.user_id = $1 AND h.is_deleted = false`, [user_id]),
+    db.query(`SELECT id, institution_name as name, account_number as ticker, 'fd' as asset_class, principal_amount as invested_amount, current_value, status FROM deposits.account_holdings WHERE user_id = $1 AND is_deleted = false`, [user_id]),
+    db.query(`SELECT h.id, s.scheme_name as name, s.scheme_id as ticker, 'mutual_fund' as asset_class, h.invested_amount, (h.units * (SELECT nav_value FROM mutual_fund.mf_nav_history WHERE scheme_id = h.scheme_id ORDER BY nav_date DESC LIMIT 1)) as current_value FROM mutual_fund.mf_holdings h JOIN mutual_fund.mf_schemes s ON s.scheme_id = h.scheme_id WHERE h.user_id = $1 AND h.is_active = true`, [user_id]),
+    db.query(`SELECT h.id, i.name as name, i.symbol as ticker, 'equity' as asset_class, (h.quantity * h.avg_buy_price) as invested_amount, (h.quantity * h.current_price) as current_value FROM india_market.equity_holdings h JOIN india_market.instruments i ON i.id = h.instrument_id WHERE h.user_id = $1`, [user_id])
+  ]);
+
+  const all = [
+    ...bonds.rows,
+    ...deposits.rows,
+    ...mf.rows,
+    ...equity.rows
+  ].map(h => ({
+    ...h,
+    invested_amount: parseFloat(h.invested_amount || 0),
+    current_value: parseFloat(h.current_value || 0),
+    gain_loss: parseFloat(h.current_value || 0) - parseFloat(h.invested_amount || 0),
+    gain_loss_pct: parseFloat(h.invested_amount || 0) > 0
+      ? ((parseFloat(h.current_value || 0) - parseFloat(h.invested_amount || 0)) / parseFloat(h.invested_amount || 0) * 100).toFixed(2)
+      : 0,
+    weight: 0, // Should be calculated based on total
+    day_change: 0,
+    day_change_pct: 0
+  }));
+
+  const totalValue = all.reduce((sum, h) => sum + h.current_value, 0) || 1;
+  return all.map(h => ({ ...h, weight: ((h.current_value / totalValue) * 100).toFixed(2) }));
+};

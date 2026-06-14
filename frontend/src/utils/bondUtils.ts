@@ -5,7 +5,7 @@ import { Bond, BondType, BondRating } from "../pages/bonds/_data/bonds.data";
  * @test computeDaysToMaturity('2032-01-15') on 2026-05-15 should return 2071
  */
 export function computeDaysToMaturity(maturityDate: string): number {
-  const today = new Date("2026-05-15"); // Fixed today to match dummy data timeline
+  const today = new Date(); // Use real today's date
   const maturity = new Date(maturityDate);
   const diffTime = maturity.getTime() - today.getTime();
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));

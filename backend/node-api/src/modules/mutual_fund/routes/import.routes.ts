@@ -1,9 +1,9 @@
-import express from 'express';
-import multer from 'multer';
+const express = require('express');
+const multer = require('multer');
 
-import {
+const {
     importCAS
-} from '../controllers/import.controller';
+} = require('../controllers/import.controller');
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.post(
     importCAS
 );
 
-export default router;
+module.exports = router;

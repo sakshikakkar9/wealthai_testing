@@ -141,355 +141,9 @@ const EquityPage = () => {
   const [editHolding,   setEditHolding]   = useState<ReturnHolding | null>(null);
   const [deleteHolding, setDeleteHolding] = useState<ReturnHolding | null>(null);
   const [loadingHoldings, setLoadingHoldings] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [equityHoldings, setEquityHoldings] = useState<EquityHolding[]>([
-      {
-        id: "h1",
-        name: "Infosys Ltd",
-        ticker: "INFY",
-        assetClass: "equity",
-        account: "rahul",
-        tags: ["large-cap", "IT"],
-        quantity: 200,
-        avgCost: 1320,
-        currentPrice: 1892,
-        currentValue: 378400,
-        invested: 264000,
-        gainLoss: 114400,
-        gainPct: 43.3,
-        xirr: 22.1,
-        dayChange: 3780,
-        dayChangePct: 1.01,
-        weight: 5.84,
-        sparkline: [310, 340, 320, 360, 380, 372, 378],
-        sector: "IT",
-        pe: 28.4,
-        pbv: 7.2,
-        eps: 66.6,
-        dividendYield: 1.8,
-        beta: 0.82,
-        marketCap: 780000,
-        marketCapCategory: "large",
-        roe: 31.4,
-        week52High: 1980,
-        week52Low: 1312,
-        week52Position: 87,
-        rsi14: 62,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [
-          { type: "dividend", date: "28 May 2026", detail: "₹21/share — ex-date 20 May" },
-        ],
-        holdingDays: 480,
-        isLTCG: true,
-        unrealizedGain: 114400,
-        unrealizedTax: 11440,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h2",
-        name: "HDFC Bank",
-        ticker: "HDFCBANK",
-        assetClass: "equity",
-        account: "rahul",
-        tags: ["large-cap", "banking"],
-        quantity: 150,
-        avgCost: 1580,
-        currentPrice: 1724,
-        currentValue: 258600,
-        invested: 237000,
-        gainLoss: 21600,
-        gainPct: 9.1,
-        xirr: 8.4,
-        dayChange: -1293,
-        dayChangePct: -0.5,
-        weight: 3.99,
-        sparkline: [230, 244, 238, 256, 260, 262, 259],
-        sector: "Banking",
-        pe: 18.2,
-        pbv: 2.8,
-        eps: 94.7,
-        dividendYield: 1.2,
-        beta: 0.94,
-        marketCap: 1310000,
-        marketCapCategory: "large",
-        roe: 16.8,
-        week52High: 1880,
-        week52Low: 1363,
-        week52Position: 69,
-        rsi14: 48,
-        aboveMA200: true,
-        aboveMA50: false,
-        upcomingActions: [],
-        holdingDays: 290,
-        isLTCG: false,
-        unrealizedGain: 21600,
-        unrealizedTax: 3240,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h3",
-        name: "Reliance Industries",
-        ticker: "RELIANCE",
-        assetClass: "equity",
-        account: "joint",
-        tags: ["large-cap", "energy"],
-        quantity: 80,
-        avgCost: 2240,
-        currentPrice: 2918,
-        currentValue: 233440,
-        invested: 179200,
-        gainLoss: 54240,
-        gainPct: 30.3,
-        xirr: 14.2,
-        dayChange: 2334,
-        dayChangePct: 1.01,
-        weight: 3.6,
-        sparkline: [200, 210, 205, 225, 230, 228, 233],
-        sector: "Energy",
-        pe: 22.1,
-        pbv: 2.4,
-        eps: 132,
-        dividendYield: 0.3,
-        beta: 1.12,
-        marketCap: 1980000,
-        marketCapCategory: "large",
-        roe: 10.8,
-        week52High: 3024,
-        week52Low: 2220,
-        week52Position: 86,
-        rsi14: 71,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [{ type: "agm", date: "15 Jun 2026", detail: "Annual General Meeting" }],
-        holdingDays: 520,
-        isLTCG: true,
-        unrealizedGain: 54240,
-        unrealizedTax: 5424,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h4",
-        name: "TCS Ltd",
-        ticker: "TCS",
-        assetClass: "equity",
-        account: "rahul",
-        tags: ["large-cap", "IT"],
-        quantity: 60,
-        avgCost: 3420,
-        currentPrice: 4218,
-        currentValue: 253080,
-        invested: 205200,
-        gainLoss: 47880,
-        gainPct: 23.3,
-        xirr: 18.6,
-        dayChange: 2531,
-        dayChangePct: 1.01,
-        weight: 3.91,
-        sparkline: [210, 225, 218, 244, 248, 250, 253],
-        sector: "IT",
-        pe: 32.1,
-        pbv: 14.8,
-        eps: 131.4,
-        dividendYield: 1.4,
-        beta: 0.78,
-        marketCap: 1550000,
-        marketCapCategory: "large",
-        roe: 48.2,
-        week52High: 4380,
-        week52Low: 3204,
-        week52Position: 86,
-        rsi14: 58,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [
-          { type: "dividend", date: "10 Jun 2026", detail: "₹28/share — ex-date 2 Jun" },
-        ],
-        holdingDays: 410,
-        isLTCG: true,
-        unrealizedGain: 47880,
-        unrealizedTax: 4788,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h5",
-        name: "Asian Paints",
-        ticker: "ASIANPAINT",
-        assetClass: "equity",
-        account: "priya",
-        tags: ["large-cap", "FMCG"],
-        quantity: 100,
-        avgCost: 2680,
-        currentPrice: 2412,
-        currentValue: 241200,
-        invested: 268000,
-        gainLoss: -26800,
-        gainPct: -10.0,
-        xirr: -4.2,
-        dayChange: -2412,
-        dayChangePct: -0.99,
-        weight: 3.72,
-        sparkline: [268, 260, 252, 248, 244, 243, 241],
-        sector: "FMCG",
-        pe: 44.2,
-        pbv: 11.6,
-        eps: 54.6,
-        dividendYield: 0.8,
-        beta: 0.68,
-        marketCap: 231000,
-        marketCapCategory: "large",
-        roe: 26.4,
-        week52High: 2840,
-        week52Low: 2280,
-        week52Position: 23,
-        rsi14: 32,
-        aboveMA200: false,
-        aboveMA50: false,
-        upcomingActions: [],
-        holdingDays: 180,
-        isLTCG: false,
-        unrealizedGain: -26800,
-        unrealizedTax: 0,
-        taxHarvestOpportunity: true,
-        taxSaving: 4020,
-      },
-      {
-        id: "h6",
-        name: "Bajaj Finance",
-        ticker: "BAJFINANCE",
-        assetClass: "equity",
-        account: "huf",
-        tags: ["large-cap", "NBFC"],
-        quantity: 40,
-        avgCost: 6200,
-        currentPrice: 7840,
-        currentValue: 313600,
-        invested: 248000,
-        gainLoss: 65600,
-        gainPct: 26.5,
-        xirr: 19.8,
-        dayChange: 3136,
-        dayChangePct: 1.01,
-        weight: 4.84,
-        sparkline: [260, 275, 270, 300, 308, 310, 314],
-        sector: "Banking",
-        pe: 36.4,
-        pbv: 6.8,
-        eps: 215.4,
-        dividendYield: 0.3,
-        beta: 1.42,
-        marketCap: 473000,
-        marketCapCategory: "large",
-        roe: 20.2,
-        week52High: 8124,
-        week52Low: 5880,
-        week52Position: 86,
-        rsi14: 68,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [
-          { type: "dividend", date: "22 Apr 2026", detail: "₹36/share — ex-date 14 Apr" },
-        ],
-        holdingDays: 398,
-        isLTCG: true,
-        unrealizedGain: 65600,
-        unrealizedTax: 6560,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h7",
-        name: "Sun Pharma",
-        ticker: "SUNPHARMA",
-        assetClass: "equity",
-        account: "rahul",
-        tags: ["large-cap", "pharma"],
-        quantity: 120,
-        avgCost: 980,
-        currentPrice: 1284,
-        currentValue: 154080,
-        invested: 117600,
-        gainLoss: 36480,
-        gainPct: 31.0,
-        xirr: 16.4,
-        dayChange: 1541,
-        dayChangePct: 1.01,
-        weight: 2.38,
-        sparkline: [128, 138, 132, 148, 152, 152, 154],
-        sector: "Pharma",
-        pe: 31.2,
-        pbv: 5.4,
-        eps: 41.2,
-        dividendYield: 0.6,
-        beta: 0.58,
-        marketCap: 308000,
-        marketCapCategory: "large",
-        roe: 18.6,
-        week52High: 1340,
-        week52Low: 984,
-        week52Position: 83,
-        rsi14: 64,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [
-          { type: "bonus", date: "18 Mar 2026", detail: "1:5 bonus — record date 15 Mar" },
-        ],
-        holdingDays: 560,
-        isLTCG: true,
-        unrealizedGain: 36480,
-        unrealizedTax: 3648,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-      {
-        id: "h8",
-        name: "Maruti Suzuki",
-        ticker: "MARUTI",
-        assetClass: "equity",
-        account: "joint",
-        tags: ["large-cap", "auto"],
-        quantity: 30,
-        avgCost: 9400,
-        currentPrice: 12240,
-        currentValue: 367200,
-        invested: 282000,
-        gainLoss: 85200,
-        gainPct: 30.2,
-        xirr: 21.3,
-        dayChange: 3672,
-        dayChangePct: 1.01,
-        weight: 5.67,
-        sparkline: [320, 340, 334, 358, 362, 364, 367],
-        sector: "Auto",
-        pe: 26.8,
-        pbv: 4.8,
-        eps: 456.8,
-        dividendYield: 0.7,
-        beta: 0.88,
-        marketCap: 370000,
-        marketCapCategory: "large",
-        roe: 18.4,
-        week52High: 12840,
-        week52Low: 9108,
-        week52Position: 82,
-        rsi14: 66,
-        aboveMA200: true,
-        aboveMA50: true,
-        upcomingActions: [
-          { type: "dividend", date: "15 Mar 2026", detail: "₹125/share — ex-date 8 Mar" },
-        ],
-        holdingDays: 440,
-        isLTCG: true,
-        unrealizedGain: 85200,
-        unrealizedTax: 8520,
-        taxHarvestOpportunity: false,
-        taxSaving: 0,
-      },
-  ]);
+  const [equityHoldings, setEquityHoldings] = useState<EquityHolding[]>([]);
 
   useEffect(() => {
     setActiveNav('equity');
@@ -498,27 +152,32 @@ const EquityPage = () => {
     setLoadingHoldings(true);
     equityApi.getHoldings()
       .then((res) => {
-        if (res?.data?.length) {
+        if (res?.success && res.data) {
           // Map API response shape to EquityHolding shape
-          // API returns: { id, company_name, symbol, quantity, avg_buy_price, current_price,
-          //                invested_amount, current_value, unrealised_pnl }
-          // For now keep all other EquityHolding fields from the matching mock row (by symbol),
-          // just update the numeric values from the real API.
-          setEquityHoldings(prev => prev.map(h => {
-            const live = res.data.find((r: any) => r.symbol === h.ticker);
-            if (!live) return h;
-            return { ...h,
-              quantity: live.quantity,
+          const mapped = res.data.map((live: any) => {
+            // Find matching mock data for details not in current API
+            const mock = MOCK_EQUITY_HOLDINGS.find(m => m.symbol === live.symbol) || MOCK_EQUITY_HOLDINGS[0];
+            return {
+              ...mock,
+              id: live.id,
+              name: live.company_name,
+              ticker: live.symbol,
+              quantity: Number(live.quantity),
               avgCost: Number(live.avg_buy_price),
               currentPrice: Number(live.current_price),
               invested: Number(live.invested_amount),
               currentValue: Number(live.current_value),
               gainLoss: Number(live.unrealised_pnl),
+              gainPct: Number(live.invested_amount) > 0 ? (Number(live.unrealised_pnl) / Number(live.invested_amount)) * 100 : 0,
             };
-          }));
+          });
+          setEquityHoldings(mapped);
         }
       })
-      .catch((err) => { /* silently keep mock data */ console.error('Equity holdings fetch failed:', err);})
+      .catch((err) => {
+        console.error('Equity holdings fetch failed:', err);
+        setError("Failed to load equity holdings.");
+      })
       .finally(() => setLoadingHoldings(false));
   }, [setActiveNav]);
 
@@ -558,32 +217,37 @@ const EquityPage = () => {
   };
 
   const EQUITY_SUMMARY = useMemo(
-    () => ({
-      totalStocks: 8,
-      totalCurrentValue: 2199600,
-      totalInvested: 1601000,
-      totalGainLoss: 598600,
-      totalGainPct: 37.4,
-      todayChange: 13289,
-      todayChangePct: 0.61,
-      xirr: 21.4,
-      dividendYTD: 14220,
-      ltcgRealized: 82400,
-      stcgRealized: 24600,
-      ltcgTax: 8240,
-      stcgTax: 3690,
-      totalUnrealizedGain: 444400,
-      totalUnrealizedTax: 39900,
-      harvestablelosses: 26800,
-      potentialTaxSaving: 4020,
-      wtdAvgPE: 27.8,
-      wtdAvgDivYield: 0.94,
-      wtdAvgBeta: 0.92,
-      benchmarkReturn: 8.7,
-      alpha: 12.7,
-      beatBenchmark: true,
-    }),
-    [],
+    () => {
+      const totalInvested = equityHoldings.reduce((sum, h) => sum + h.invested, 0);
+      const totalCurrentValue = equityHoldings.reduce((sum, h) => sum + h.currentValue, 0);
+      const totalGainLoss = totalCurrentValue - totalInvested;
+      return {
+        totalStocks: equityHoldings.length,
+        totalCurrentValue,
+        totalInvested,
+        totalGainLoss,
+        totalGainPct: totalInvested > 0 ? (totalGainLoss / totalInvested) * 100 : 0,
+        todayChange: 13289,
+        todayChangePct: 0.61,
+        xirr: 21.4,
+        dividendYTD: 14220,
+        ltcgRealized: 82400,
+        stcgRealized: 24600,
+        ltcgTax: 8240,
+        stcgTax: 3690,
+        totalUnrealizedGain: totalGainLoss,
+        totalUnrealizedTax: totalGainLoss * 0.1, // simplified
+        harvestablelosses: 26800,
+        potentialTaxSaving: 4020,
+        wtdAvgPE: 27.8,
+        wtdAvgDivYield: 0.94,
+        wtdAvgBeta: 0.92,
+        benchmarkReturn: 8.7,
+        alpha: 12.7,
+        beatBenchmark: true,
+      };
+    },
+    [equityHoldings],
   );
 
   const filteredHoldings = useMemo(() => {
@@ -626,7 +290,7 @@ const EquityPage = () => {
     });
 
     return list;
-  }, [equityHoldings, searchQuery, sectorFilter, marketCapFilter, sortField, sortDir]);
+  }, [equityHoldings, searchQuery, sectorFilter, marketCapFilter, sortField, sortDir, activeGoal, tags]);
 
   const activeStock = useMemo(
     () => equityHoldings.find((h) => h.id === activeStockId) || null,
@@ -752,6 +416,14 @@ const EquityPage = () => {
     }));
   }, [equityHoldings]);
 
+  if (error) {
+    return (
+      <div className="flex h-screen bg-[#F2F0EF] items-center justify-center">
+        <div className="text-red-500 font-bold">Error: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-[#F2F0EF] overflow-hidden">
       <Sidebar />
@@ -759,7 +431,7 @@ const EquityPage = () => {
         <TopHeader />
         <main className="flex-1 overflow-y-auto">
           {/* SECTION 1 — Command banner */}
-          <EquityCommandBanner summary={EQUITY_SUMMARY} totalStocks={8} totalCompanies={8} />
+          <EquityCommandBanner summary={EQUITY_SUMMARY} totalStocks={equityHoldings.length} totalCompanies={equityHoldings.length} />
 
           {/* Returns Analysis — live data table */}
           <div className="px-6 py-4">
