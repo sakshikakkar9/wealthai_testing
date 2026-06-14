@@ -14,9 +14,6 @@ const BOND_TYPE_MAP: Record<string, string> = {
   'treasury': 'T-Bill',
   'tax_free': 'Tax Free',
   'sdl': 'SDL',
-  'treasury': 'T-Bill',
-  't-bill': 'T-Bill',
-  't_bill': 'T-Bill',
   'default': 'Corporate'
 };
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import logger from '../logger';
 const jwt    = require('jsonwebtoken');
-const logger = require('../logger');
 
 function authMiddleware(req: Request & { user?: any }, res: Response, next: NextFunction) {
   try {
