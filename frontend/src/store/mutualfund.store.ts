@@ -39,7 +39,7 @@ export interface MutualFundSummary {
   totalGainPct: number;
   xirr: number;
   monthlySIPAmount: number;
-  nextSIPDate: string;
+  nextSIPDate: string | null;
   nextSIPAmount: number;
   dividendYTD: number;
   regularPlanFunds: number;
@@ -255,29 +255,29 @@ export const useMFStore = create<MFState>((set, get) => ({
       ]);
 
       set({
-        holdings: holdingsRes.data || [],
-        totalItems: holdingsRes.pagination?.total || 0,
+        holdings: (holdingsRes as any).data || [],
+        totalItems: (holdingsRes as any).pagination?.total || 0,
         summary: summaryRes
           ? {
-              totalFunds: summaryRes.total_funds || 0,
-              activeSIPs: summaryRes.active_sips || 0,
+              totalFunds: (summaryRes as any).total_funds || 0,
+              activeSIPs: (summaryRes as any).active_sips || 0,
               pausedSIPs: 0,
-              totalInvested: parseFloat(summaryRes.total_invested || "0"),
-              totalCurrentValue: parseFloat(summaryRes.total_current_value || "0"),
-              totalGainLoss: parseFloat(summaryRes.total_gain_loss || "0"),
-              totalGainPct: parseFloat(summaryRes.total_gain_pct || "0"),
-              xirr: 0,
-              monthlySIPAmount: parseFloat(summaryRes.monthly_sip_amount || "0"),
-              nextSIPDate: "N/A",
-              nextSIPAmount: 0,
+              totalInvested: parseFloat((summaryRes as any).total_invested || "0"),
+              totalCurrentValue: parseFloat((summaryRes as any).total_current_value || "0"),
+              totalGainLoss: parseFloat((summaryRes as any).total_gain_loss || "0"),
+              totalGainPct: parseFloat((summaryRes as any).total_gain_pct || "0"),
+              xirr: (summaryRes as any).xirr || 0, // TODO: wire to backend xirr calculation
+              monthlySIPAmount: parseFloat((summaryRes as any).monthly_sip_amount || "0"),
+              nextSIPDate: (summaryRes as any).next_sip_date || null,
+              nextSIPAmount: parseFloat((summaryRes as any).next_sip_amount || "0"),
               dividendYTD: 0,
               regularPlanFunds: 0,
               regularPlanAnnualCommission: 0,
               weightedAvgExpenseRatio: 0,
               annualExpenseCostINR: 0,
               hasELSS: false,
-              todayChange: parseFloat(summaryRes.today_change || "0"),
-              todayChangePct: parseFloat(summaryRes.today_change_pct || "0"),
+              todayChange: parseFloat((summaryRes as any).today_change || "0"),
+              todayChangePct: parseFloat((summaryRes as any).today_change_pct || "0"),
             }
           : null,
         isLoading: false,

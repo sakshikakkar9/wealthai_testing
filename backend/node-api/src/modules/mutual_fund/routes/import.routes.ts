@@ -17,4 +17,4 @@ router.post(
     importCAS
 );
 
-export default router;
+module.exports = router;
