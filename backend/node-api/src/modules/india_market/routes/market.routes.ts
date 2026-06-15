@@ -16,6 +16,9 @@ router.get('/instruments/:id',          instrumentsCtrl.getInstrumentById);
 
 // ── Equity ────────────────────────────────────────────────────────
 router.get('/equity/holdings',          equityCtrl.getHoldings);
+router.post('/equity/holdings',         equityCtrl.createHolding);
+router.patch('/equity/holdings/:id',    equityCtrl.updateHolding);
+router.delete('/equity/holdings/:id',   equityCtrl.deleteHolding);
 router.get('/equity/transactions',      equityCtrl.getTransactions);
 router.get('/orders',                   equityCtrl.getOrders);
 router.get('/dividends',                equityCtrl.getDividends);

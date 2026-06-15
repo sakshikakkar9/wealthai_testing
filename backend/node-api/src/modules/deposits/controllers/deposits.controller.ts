@@ -11,7 +11,13 @@ export const getDeposits = async (req: AuthRequest, res: Response) => {
     // AUTH BYPASS — re-enable for production
     const userId = req.user?.user_id || '00000000-0000-0000-0000-000000000000';
     const holdings = await services.getAllHoldings(userId, req.query.account_type);
-    res.json({ success: true, data: holdings });
+    res.json({
+      success: true,
+      data: {
+        data: holdings,
+        pagination: {}
+      }
+    });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }

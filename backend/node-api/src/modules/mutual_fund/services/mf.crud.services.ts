@@ -26,6 +26,24 @@ exports.getHoldings = async (user_id) => {
   return rows;
 };
 
+exports.updateHolding = async (id, { units, avg_nav, invested_amount, is_active }) => {
+  const { rows } = await db.query(
+    `UPDATE mutual_fund.mf_holdings SET
+       units           = COALESCE($1, units),
+       avg_nav         = COALESCE($2, avg_nav),
+       invested_amount = COALESCE($3, invested_amount),
+       is_active       = COALESCE($4, is_active),
+       last_updated_at = NOW()
+     WHERE id = $5 RETURNING *`,
+    [units, avg_nav, invested_amount, is_active, id]
+  );
+  return rows[0];
+};
+
+exports.deleteHolding = async (id) => {
+  await db.query(`UPDATE mutual_fund.mf_holdings SET is_active = false, last_updated_at = NOW() WHERE id = $1`, [id]);
+};
+
 exports.getHoldingsSummary = async (user_id) => {
   const { rows } = await db.query(
     `WITH holding_current_values AS (

@@ -11,10 +11,10 @@ const cors    = require('cors');
 const helmet  = require('helmet');
 const morgan  = require('morgan');
 
-const logger       = require('./shared/logger');
-const pool         = require('./shared/dbconnection');
-const errorHandler = require('./shared/middleware/errorHandler');
-const scheduler    = require('./shared/scheduler');
+const logger       = require('./shared/logger').default || require('./shared/logger');
+const pool         = require('./shared/dbconnection').default || require('./shared/dbconnection');
+const errorHandler = require('./shared/middleware/errorHandler').default || require('./shared/middleware/errorHandler');
+const scheduler    = require('./shared/scheduler').default || require('./shared/scheduler');
 
 // ── Route imports ─────────────────────────────────────────────────
 const authRoutes         = require('./modules/auth/routes/auth.routes');

@@ -44,6 +44,33 @@ exports.getTransactions = async (user_id, { from, to, broker_account_id } = {}) 
   return rows;
 };
 
+exports.createHolding = async ({ user_id, broker_account_id, instrument_id, quantity, avg_buy_price, current_price }) => {
+  const { rows } = await db.query(
+    `INSERT INTO india_market.equity_holdings
+       (user_id, broker_account_id, instrument_id, quantity, avg_buy_price, current_price)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    [user_id, broker_account_id, instrument_id, quantity, avg_buy_price, current_price]
+  );
+  return rows[0];
+};
+
+exports.updateHolding = async (id, { quantity, avg_buy_price, current_price }) => {
+  const { rows } = await db.query(
+    `UPDATE india_market.equity_holdings SET
+       quantity      = COALESCE($1, quantity),
+       avg_buy_price = COALESCE($2, avg_buy_price),
+       current_price = COALESCE($3, current_price),
+       last_updated  = NOW()
+     WHERE id = $4 RETURNING *`,
+    [quantity, avg_buy_price, current_price, id]
+  );
+  return rows[0];
+};
+
+exports.deleteHolding = async (id) => {
+  await db.query(`DELETE FROM india_market.equity_holdings WHERE id = $1`, [id]);
+};
+
 exports.getOrders = async (user_id, { status, order_source, from, to } = {}) => {
   let q = `
     SELECT o.*, i.symbol, i.instrument_type, i.option_type, i.strike_price, i.expiry_date

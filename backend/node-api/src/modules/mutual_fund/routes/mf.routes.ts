@@ -22,6 +22,8 @@ router.post('/parse-nav',       navCtrl.parseNav);
 router.get('/holdings',         crudCtrl.getHoldings);
 router.get('/holdings/summary', crudCtrl.getHoldingsSummary);
 router.post('/holdings/add',    crudCtrl.addHolding);
+router.put('/holdings/:id',     crudCtrl.updateHolding);
+router.delete('/holdings/:id',  crudCtrl.deleteHolding);
 router.post('/transaction',     crudCtrl.addTransaction);
 router.get('/transactions',     crudCtrl.getTransactions);
 
