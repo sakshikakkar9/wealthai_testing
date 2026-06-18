@@ -18,7 +18,9 @@ exports.addHolding = async (req: AuthRequest, res: Response, next: NextFunction)
 
 exports.getAllHoldings = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const holdings = await services.getAllHoldings(req.user.user_id);
+    // AUTH BYPASS — re-enable for production
+    const userId = req.user?.user_id || '00000000-0000-0000-0000-000000000000';
+    const holdings = await services.getAllHoldings(userId);
     return sendSuccess(res, holdings);
   } catch (err) { next(err); }
 };

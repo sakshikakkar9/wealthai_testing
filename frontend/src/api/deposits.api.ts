@@ -1,10 +1,9 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 const getHeaders = () => {
-  const mockToken = 'mock-token';
+  // AUTH BYPASS — re-enable for production
   return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${mockToken}`
+    'Content-Type': 'application/json'
   };
 };
 

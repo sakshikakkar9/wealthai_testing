@@ -6,7 +6,8 @@ const navCtrl        = require('../controllers/mf.nav.controller');
 const sipCtrl        = require('../controllers/mf.sip.controller');
 const authMiddleware = require('../../../shared/middleware/auth.middleware');
 
-router.use(authMiddleware);
+// AUTH BYPASS — re-enable for production
+// router.use(authMiddleware);
 
 // ── Scheme Master ─────────────────────────────────────────────────
 router.get('/schemes',          navCtrl.getSchemes);
@@ -19,7 +20,10 @@ router.post('/parse-nav',       navCtrl.parseNav);
 
 // ── Holdings & Transactions ───────────────────────────────────────
 router.get('/holdings',         crudCtrl.getHoldings);
+router.get('/holdings/summary', crudCtrl.getHoldingsSummary);
 router.post('/holdings/add',    crudCtrl.addHolding);
+router.put('/holdings/:id',     crudCtrl.updateHolding);
+router.delete('/holdings/:id',  crudCtrl.deleteHolding);
 router.post('/transaction',     crudCtrl.addTransaction);
 router.get('/transactions',     crudCtrl.getTransactions);
 

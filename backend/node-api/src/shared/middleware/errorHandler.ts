@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────
 import type { Request, Response, NextFunction } from 'express';   // ← fixes TS2304
 
-const logger = require('../logger');
+import logger from '../logger';
 
 function errorHandler(
   err: Error & { statusCode?: number; code?: string; column?: string },

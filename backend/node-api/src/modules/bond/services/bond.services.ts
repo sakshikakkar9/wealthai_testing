@@ -26,7 +26,7 @@ exports.getAllHoldings = async (user_id) => {
     `SELECT h.id, h.quantity, h.avg_purchase_price, h.invested_amount,
             h.purchase_date, h.maturity_amount, h.status, h.platform,
             b.bond_name, b.bond_type, b.issuer_name, b.coupon_rate,
-            b.maturity_date, b.isin
+            b.maturity_date, b.isin, b.face_value
      FROM bond.bond_holdings h
      JOIN bond.bond_master b ON b.id = h.bond_id
      WHERE h.user_id = $1 AND h.is_deleted = false

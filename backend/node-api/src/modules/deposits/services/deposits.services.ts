@@ -19,7 +19,15 @@ exports.addHolding = async ({ user_id, account_type, account_number, account_nam
 };
 
 exports.getAllHoldings = async (user_id, account_type) => {
-  let q = `SELECT * FROM deposits.account_holdings WHERE user_id = $1 AND is_deleted = false`;
+  let q = `
+    SELECT
+      id, institution_name AS bank_name, principal_amount, interest_rate,
+      tenure_months, maturity_date, maturity_amount, status, created_at,
+      account_number, account_type, nominee_name, compounding_freq,
+      interest_type, start_date, current_value,
+      EXTRACT(DAY FROM (maturity_date - NOW()))::integer AS days_left
+    FROM deposits.account_holdings
+    WHERE user_id = $1 AND is_deleted = false`;
   const p = [user_id];
   if (account_type) { p.push(account_type); q += ` AND account_type = $${p.length}`; }
   q += ` ORDER BY created_at DESC`;
