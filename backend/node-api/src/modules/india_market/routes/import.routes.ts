@@ -24,4 +24,4 @@ router.post(
     importHoldings
 );
 
-export default router;
+module.exports = router;
