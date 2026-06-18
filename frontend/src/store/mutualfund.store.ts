@@ -266,10 +266,10 @@ export const useMFStore = create<MFState>((set, get) => ({
               totalCurrentValue: parseFloat(summaryRes.total_current_value || "0"),
               totalGainLoss: parseFloat(summaryRes.total_gain_loss || "0"),
               totalGainPct: parseFloat(summaryRes.total_gain_pct || "0"),
-              xirr: 0,
+              xirr: parseFloat(summaryRes.xirr || "0"), // TODO: wire to backend xirr calculation
               monthlySIPAmount: parseFloat(summaryRes.monthly_sip_amount || "0"),
-              nextSIPDate: "N/A",
-              nextSIPAmount: 0,
+              nextSIPDate: summaryRes.next_sip_date || "—", // TODO: query existing DB schema for next SIP date
+              nextSIPAmount: parseFloat(summaryRes.next_sip_amount || "0"),
               dividendYTD: 0,
               regularPlanFunds: 0,
               regularPlanAnnualCommission: 0,

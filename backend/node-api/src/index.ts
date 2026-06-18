@@ -28,6 +28,7 @@ const portfolioRoutes    = require('./modules/portfolio/routes/portfolio.routes'
 // Cleaned up to match your core routing structure (Fixes the red lines)
 const mfImportRoutes     = require('./modules/mutual_fund/routes/import.routes');
 const marketImportRoutes = require('./modules/india_market/routes/import.routes');
+const transactionRoutes  = require('./modules/transactions/routes/transactions.routes');
 
 const app: import('express').Application = express();
 const PORT = process.env.PORT || 3000;
@@ -77,12 +78,13 @@ app.get('/db-test', async (req: any, res: any) => {
 // ── API Routes  (all prefixed /api/v1) ───────────────────────────
 app.use('/api/v1/auth',       authRoutes);
 app.use('/api/v1/bond',       bondRoutes);
-app.use('/api/v1/fd',         depositsRoutes);
+app.use('/api/v1/deposits',   depositsRoutes);
 // app.use('/api/v1/mf',         mfRoutes);
 app.use('/api/v1/mutual-funds', mfRoutes);
 app.use('/api/v1/algo',       algoRoutes);
 app.use('/api/v1/market',     marketRoutes);
 app.use('/api/v1/portfolio',  portfolioRoutes);
+app.use('/api/v1/transaction', transactionRoutes);
 
 // Mounted upload / import routes 
 app.use('/api/v1/mf/import',     mfImportRoutes);

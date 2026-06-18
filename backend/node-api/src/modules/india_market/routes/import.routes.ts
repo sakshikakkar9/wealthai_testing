@@ -1,10 +1,10 @@
-import express from 'express';
-import multer from 'multer';
+const express = require('express');
+const multer = require('multer');
 
-import {
+const {
     importContractNote,
     importHoldings
-} from '../controllers/import.controller';
+} = require('../controllers/import.controller');
 
 const router = express.Router();
 
@@ -24,4 +24,4 @@ router.post(
     importHoldings
 );
 
-export default router;
+module.exports = router;
